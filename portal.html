@@ -280,6 +280,18 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .payment-method__qr-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 0.5rem;
+      background: var(--paper);
+      border-radius: 7px;
     }
     .payment-method__qr-label {
       font-family: 'DM Sans', system-ui, sans-serif;
@@ -1078,7 +1090,7 @@
             the climate and cadence of this itinerary. Download the
             PDF, print it if that helps, and consult it as packing
             begins. The list is brief by intention; trust it.
-            <a class="resource__link" href="documents/onyx-isle-packing-list.pdf" target="_blank" rel="noopener">
+            <a class="resource__link" href="documents/onyx-isle-packing-list.pdf" download="onyx-isle-packing-list.pdf">
               Download the packing list (PDF)
             </a>
           </p>
@@ -1172,16 +1184,28 @@
 
       <div class="payment-methods">
         <div class="payment-method">
-          <div class="payment-method__qr" aria-label="Zelle QR code placeholder">
+          <div class="payment-method__qr" aria-label="Zelle QR code">
             <span class="payment-method__qr-label">QR code</span>
+            <img
+              src="images/portal-payment-zelle.png"
+              alt="Zelle QR code for payment"
+              class="payment-method__qr-img"
+              onerror="this.style.display='none';"
+            />
           </div>
           <div class="payment-method__name">Zelle</div>
           <div class="payment-method__type">Cash payments</div>
           <div class="payment-method__note"><em>Preferred method</em></div>
         </div>
         <div class="payment-method">
-          <div class="payment-method__qr" aria-label="Chase Payment Portal QR code placeholder">
+          <div class="payment-method__qr" aria-label="Chase Payment Portal QR code">
             <span class="payment-method__qr-label">QR code</span>
+            <img
+              src="images/portal-payment-chase.png"
+              alt="Chase Payment Portal QR code"
+              class="payment-method__qr-img"
+              onerror="this.style.display='none';"
+            />
           </div>
           <div class="payment-method__name">Chase Payment Portal</div>
           <div class="payment-method__type">Credit card payments</div>
