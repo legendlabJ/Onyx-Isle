@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Members Portal · Onyx Isle</title>
+  <meta name="description" content="Members portal. Trip details, itinerary, resources, and guest next steps." />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Scoped itinerary table styles. Lives here, not in style.css,
+       so the main stylesheet is unchanged. */
+    .day__agenda {
+      margin-top: 0.25rem;
+      font-family: inherit;
+      color: var(--ink);
+    }
+    .day__agenda-head,
+    .day__agenda-row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+    }
+    .day__agenda-head {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--ink-3);
+    }
+    .day__agenda-row {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .day__agenda-row:last-child {
+      border-bottom: none;
+    }
+    .day__agenda-row .cell-activity {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .day__agenda-row .cell-location,
+    .day__agenda-row .cell-time {
+      color: var(--ink-2);
+    }
+    .day__agenda-row .cell-time.unset {
+      color: var(--ink-3);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 720px) {
+      .day__agenda-head { display: none; }
+      .day__agenda-row {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+        padding: 0.9rem 0;
+      }
+      .day__agenda-row .cell-location::before {
+        content: "at ";
+        color: var(--ink-3);
+      }
+      .day__agenda-row .cell-time:not(:empty)::before {
+        content: "Departs ";
+        color: var(--ink-3);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gate">
+    <div class="gate__inner">
+      <div class="gate__mark">Onyx Isle</div>
+      <div class="gate__line"></div>
+      <p class="gate__welcome">
+        A private threshold. If you have been expected, you will already
+        know the word that opens it.
+      </p>
+      <form class="gate__form">
+        <input
+          type="password"
+          class="gate__input"
+          placeholder="the word"
+          autocomplete="off"
+          autofocus
+        />
+        <button type="submit" class="gate__submit">Enter</button>
+        <p class="gate__error" aria-live="polite"></p>
+      </form>
+      <p class="gate__hint">
+        For guests of the current expedition. If you do not have the
+        word, please reach your point of contact.
+      </p>
+    </div>
+  </div>
+
+  <nav class="portal-nav">
+    <div>
+      <div class="portal-nav__brand">Onyx Isle</div>
+      <div class="portal-nav__trip">
+        <em>The Ghana expedition · July 2027</em>
+      </div>
+    </div>
+    <ul class="portal-nav__links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#milestones">Milestones</a></li>
+      <li><a href="#itinerary">Itinerary</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#next-steps">Next steps</a></li>
+      <li><a href="#glimpse">Glimpse</a></li>
+    </ul>
+  </nav>
+
+  <section class="portal-hero" id="overview">
+    <div class="portal-hero__inner">
+      <div class="portal-hero__eyebrow">July 2027 · Accra, Ghana</div>
+      <h1 class="portal-hero__title">
+        The Ghana<br /><span class="italic">expedition.</span>
+      </h1>
+      <div class="portal-hero__meta">
+        <div>
+          <div class="portal-hero__meta-label">Destination</div>
+          <div class="portal-hero__meta-value">Accra</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Dates</div>
+          <div class="portal-hero__meta-value">2 July to 12 July 2027</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Duration</div>
+          <div class="portal-hero__meta-value">Ten full days; the eleventh reserved for departures</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Cohort</div>
+          <div class="portal-hero__meta-value">Friends and family, by invitation only</div>
+        </div>
+      </div>
+      <p class="portal-hero__intro">
+        What follows is everything a guest needs to know before arrival.
+        It is designed to be read in order or returned to as the trip
+        approaches. Milestones are updated as they are reached.
+        Resources continue to be added in the weeks leading up to
+        departure.
+      </p>
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--light" id="milestones">
+    <div class="portal-section__head">
+      <div class="eyebrow">Milestones</div>
+      <h2 class="portal-section__title">
+        The path <span class="italic">to the Motherland.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <div class="milestones">
+
+        <div class="milestone">
+          <div class="milestone__when">Completed · February 2026</div>
+          <div>
+            <h3 class="milestone__title">Invitation accepted</h3>
+            <p class="milestone__desc">
+              Welcome to the cohort. A brief orientation note and
+              introductions to the expedition team.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">Completed · April 2026</div>
+          <div>
+            <h3 class="milestone__title">Website launch</h3>
+            <p class="milestone__desc">
+              The members portal opens to the cohort. A first walk
+              through the activities, the cadence of the year ahead,
+              and the dates that will shape it.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">August 2026</div>
+          <div>
+            <h3 class="milestone__title">Scout and book airfare</h3>
+            <p class="milestone__desc">
+              Begin researching flights into Kotoka International
+              Airport. Our team is available for routing guidance. We
+              recommend booking early while fares remain reasonable.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">October 2026</div>
+          <div>
+            <h3 class="milestone__title">Readings and cultural grounding</h3>
+            <p class="milestone__desc">
+              Release of the curated list of readings, interviews, and
+              short films intended to prepare guests for what the
+              itinerary will open. The materials are selected to be
+              returned to across the year, not consumed in one sitting.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">November 2026</div>
+          <div>
+            <h3 class="milestone__title">First deposit due</h3>
+            <p class="milestone__desc">
+              The first of three installments. Payment instructions
+              and receipts are handled privately with each guest.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">December 2026</div>
+          <div>
+            <h3 class="milestone__title">Last call for airfare</h3>
+            <p class="milestone__desc">
+              For optimal pricing, airfare should be booked no later
+              than this month. Our team remains available for routing
+              and coordination with other guests.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">February 2027</div>
+          <div>
+            <h3 class="milestone__title">Second deposit due</h3>
+            <p class="milestone__desc">
+              The second installment, on the same cadence as the first.
+              Guests hearing silence from our logistics lead are welcome
+              to reach out directly.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">March 2027</div>
+          <div>
+            <h3 class="milestone__title">Spring Checkpoint Session</h3>
+            <p class="milestone__desc">
+              A virtual gathering with the full cohort. Instruction on
+              vaccinations, passport renewal where needed, and the
+              upcoming visa application, paired with a check in on
+              readings and questions as the trip comes into closer view.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">April 2027</div>
+          <div>
+            <h3 class="milestone__title">Third and final deposit due</h3>
+            <p class="milestone__desc">
+              The final installment. With this, the cohort is
+              financially committed and logistics solidify for the
+              months ahead.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">May 2027</div>
+          <div>
+            <h3 class="milestone__title">Apply for visa</h3>
+            <p class="milestone__desc">
+              Visa applications are submitted and passports are sent to
+              the Embassy of Ghana. We provide the detailed checklist
+              and guide the process, though each guest's application
+              belongs to them.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">June 2027</div>
+          <div>
+            <h3 class="milestone__title">Pre-departure session</h3>
+            <p class="milestone__desc">
+              Packing list, final questions, contact sheet, lodging
+              confirmation, and arrival time coordination. The final
+              virtual gathering of the cohort before the trip begins.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">1 July 2027</div>
+          <div>
+            <h3 class="milestone__title">Depart from America</h3>
+            <p class="milestone__desc">
+              Transatlantic travel. The cohort converges within a
+              single window so that the first evening in Accra can
+              begin as one group rather than a trickle of arrivals.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">2 July 2027</div>
+          <div>
+            <h3 class="milestone__title">Arrival in Ghana</h3>
+            <p class="milestone__desc">
+              Private ground transportation from Kotoka International
+              Airport to our base at Cantonments Embassy Gardens.
+              Welcome dinner that evening. The expedition begins.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section" id="itinerary">
+    <div class="portal-section__head">
+      <div class="eyebrow">Itinerary</div>
+      <h2 class="portal-section__title">
+        The shape of <span class="italic">the ten days.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        What follows is deliberate and also deliberately incomplete.
+        Every cohort has moments that are not on the page, and those
+        moments are the point. Departure times are listed where they
+        have been confirmed and will be filled in as the itinerary
+        is finalized.
+      </p>
+
+      <!-- DAY 1 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day one</div>
+          <h3 class="day__title">Arrival and welcome</h3>
+          <div class="day__date">2 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Arrival</div>
+              <div class="cell-location">Kotoka International Airport</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Grocery stop</div>
+              <div class="cell-location">Palace Mall</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest and acclimation</div>
+              <div class="cell-location">Cantonments Embassy Gardens</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Welcome dinner</div>
+              <div class="cell-location">Buka</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Optional: night out</div>
+              <div class="cell-location">Alley Bar</div>
+              <div class="cell-time">10:00 PM</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day two</div>
+          <h3 class="day__title">First rhythms of the city</h3>
+          <div class="day__date">3 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Morning workout with Dickson</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Basket weaving class and lunch</div>
+              <div class="cell-location">Ozzies Beach Palace</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Accra Goods Market</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time">1:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Teabaa</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day three</div>
+          <h3 class="day__title">The coast and its memory</h3>
+          <div class="day__date">4 July · Central Region</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Kakum National Park canopy walk</div>
+              <div class="cell-location">Odumase</div>
+              <div class="cell-time">3:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Cape Coast slave dungeons</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Assin Manso slave river</div>
+              <div class="cell-location">Assin Manso</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">80/20</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day four</div>
+          <h3 class="day__title">At the table</h3>
+          <div class="day__date">5 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Jollof rice cooking class</div>
+              <div class="cell-location">Food Haven</div>
+              <div class="cell-time">10:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Sandbox Beach Club or Alora Beach Resort</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day five</div>
+          <h3 class="day__title">The sculpted witness</h3>
+          <div class="day__date">6 July · Ada Foah</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Nkyinkyim Museum</div>
+              <div class="cell-location">Ada Foah</div>
+              <div class="cell-time">8:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Living Room</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Night out</div>
+              <div class="cell-location">Venue to be confirmed</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 6 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day six</div>
+          <h3 class="day__title">Open city, the hand at work</h3>
+          <div class="day__date">7 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Open exploration, morning</div>
+              <div class="cell-location">Accra, guest's choice</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Batik making</div>
+              <div class="cell-location">Accra Art D'strict</div>
+              <div class="cell-time">1:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Afrikiko</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 7 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day seven</div>
+          <h3 class="day__title">Nation and memory</h3>
+          <div class="day__date">8 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Chocolate making</div>
+              <div class="cell-location">Bioko, Accra</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Kwame Nkrumah Museum</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Photoshoot</div>
+              <div class="cell-location">Black Star Gate</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Rockz Waakye</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 8 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day eight</div>
+          <h3 class="day__title">Canopy and cascade</h3>
+          <div class="day__date">9 July · Aburi and environs</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Aburi Gardens and lunch</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time">7:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Oboadaka Waterfalls</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Honey Suckle</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 9 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day nine</div>
+          <h3 class="day__title">The Pan-African inheritance</h3>
+          <div class="day__date">10 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">W. E. B. Du Bois Center</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest day and open exploration</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Indulge Accra</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 10 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day ten</div>
+          <h3 class="day__title">Gathered in closing</h3>
+          <div class="day__date">11 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Church service</div>
+              <div class="cell-location">Empowerment Worship Center</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest day and open exploration</div>
+              <div class="cell-location">Accra, guest's choice</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Final dinner</div>
+              <div class="cell-location">Skybar or Zen Garden</div>
+              <div class="cell-time">6:00 PM</div>
+            </div>
+          </div>
+          <div class="day__lodging">
+            <div class="day__lodging-label">Lodging</div>
+            <div class="day__lodging-value">Cantonments Embassy Gardens</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 11 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day eleven</div>
+          <h3 class="day__title">Departure</h3>
+          <div class="day__date">12 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Departures</div>
+              <div class="cell-location">Kotoka International Airport</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <p class="day__body" style="margin-top: 1.25rem;">
+            Private transfers to the airport on each guest's timing.
+            Safe travels home. The integration session with the full
+            cohort will be scheduled in the weeks following return,
+            details to follow.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--light" id="resources">
+    <div class="portal-section__head">
+      <div class="eyebrow">Resources</div>
+      <h2 class="portal-section__title">
+        Everything you need <span class="italic">for the road.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        Organized for easy return. This section is updated in the weeks
+        leading up to departure. If you do not see something you need,
+        please ask.
+      </p>
+
+      <div class="resource-grid">
+        <div class="resource">
+          <h3 class="resource__title">Passport and visa</h3>
+          <p class="resource__body">
+            Your passport must be valid for at least six months beyond
+            the date of entry. Visa requirements vary by country of
+            citizenship. We do not process the visa on your behalf; we
+            guide you through the application and provide the detailed
+            documentation checklist during the March Checkpoint Session.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Vaccinations and health</h3>
+          <p class="resource__body">
+            Yellow fever vaccination is required for entry. Additional
+            recommendations include hepatitis A, typhoid, and
+            anti-malarial medication. We will review your specific
+            situation during the one-on-one consultation in March.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Packing considerations</h3>
+          <p class="resource__body">
+            Lightweight, breathable fabrics. Long sleeves for mornings
+            and evenings. A modest option for cultural sites.
+            Comfortable shoes for walking. A detailed packing list will
+            be provided two weeks before departure. Formal dinners are
+            rare and relaxed.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Currency and connectivity</h3>
+          <p class="resource__body">
+            The Ghanaian cedi is the local currency. Most expenses are
+            handled through the expedition; personal spending money is
+            modest. Connectivity is good in the cities and variable in
+            the rural portions of the itinerary. Local SIM cards can be
+            arranged on arrival.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Cultural grounding</h3>
+          <p class="resource__body">
+            The curated reading and viewing list is released in
+            October 2026 and returned to in depth at the March
+            Checkpoint Session. Engagement with the materials is not
+            required but is strongly encouraged. The trip lands
+            differently for guests who arrive prepared for the
+            encounters it makes possible.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Dietary and accessibility</h3>
+          <p class="resource__body">
+            Please share any dietary restrictions, allergies, and
+            accessibility considerations through the intake form or
+            directly with our team. We accommodate at every meal and
+            every venue, and the earlier we know, the more thoroughly
+            we can arrange.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Safety and emergency contact</h3>
+          <p class="resource__body">
+            Our team is reachable at any hour throughout the
+            expedition. A full emergency contact sheet, including
+            local medical resources and embassy numbers, is
+            distributed at the pre-departure convening.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Guest directory</h3>
+          <p class="resource__body">
+            A brief directory of your fellow travelers, with consent,
+            will be shared at the pre-departure convening so that
+            introductions already in progress can become introductions
+            already made.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section" id="next-steps">
+    <div class="portal-section__head">
+      <div class="eyebrow">Guest next steps</div>
+      <h2 class="portal-section__title">
+        The quiet preparation <span class="italic">that lets the trip land.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        A short sequence of actions to take in the months before
+        departure. Each is small by design. Together, they are the
+        groundwork that lets the expedition do its work.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">One</div>
+          <div>
+            <h3 class="step__title">Confirm passport validity</h3>
+            <p class="step__desc">
+              Check that your passport is valid through at least
+              August 2027. If it is not, begin the renewal process
+              immediately and let our team know so we can offer
+              support well ahead of the visa application window.
+            </p>
+          </div>
+          <div class="step__when">By December 2026</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Two</div>
+          <div>
+            <h3 class="step__title">Complete the guest intake form</h3>
+            <p class="step__desc">
+              Dietary preferences, accessibility considerations,
+              emergency contact, travel history, and the goals you are
+              bringing to the expedition. Reach out if the link has
+              not arrived.
+            </p>
+          </div>
+          <div class="step__when">By February 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Three</div>
+          <div>
+            <h3 class="step__title">Schedule your logistics consultation</h3>
+            <p class="step__desc">
+              A thirty minute call with our logistics lead to review
+              passport, visa, vaccinations, and travel insurance.
+              This call is the substance of the March Checkpoint
+              Session.
+            </p>
+          </div>
+          <div class="step__when">During March 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Four</div>
+          <div>
+            <h3 class="step__title">Complete the review of all ground materials</h3>
+            <p class="step__desc">
+              The curated readings, interviews, and short films released
+              in October 2026 are designed to prepare the cohort for
+              the encounters the itinerary opens. Complete your review
+              ahead of the Spring Checkpoint Session so that the March
+              conversation is grounded in shared material.
+            </p>
+          </div>
+          <div class="step__when">By March 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Five</div>
+          <div>
+            <h3 class="step__title">Attend the pre-departure convening</h3>
+            <p class="step__desc">
+              Our final virtual gathering with the full cohort.
+              Questions answered, introductions renewed, the shape of
+              the trip clarified. Attendance is requested of every
+              guest.
+            </p>
+          </div>
+          <div class="step__when">June 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Six</div>
+          <div>
+            <h3 class="step__title">Pack with the list in hand</h3>
+            <p class="step__desc">
+              Guests should begin packing no later than the week of
+              June 20th, so that every item is procured and settled
+              well before the day of departure. This lead time exists
+              for a reason: guests who pack early arrive relaxed and
+              confident rather than hurried. The packing list itself is
+              brief, specific, and built from years of watching
+              travelers bring either too much or the wrong thing.
+              Trust the list.
+            </p>
+          </div>
+          <div class="step__when">Week of 20 June</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Seven</div>
+          <div>
+            <h3 class="step__title">Arrive</h3>
+            <p class="step__desc">
+              We will be there to meet you. The rest is the work we
+              have been preparing for together.
+            </p>
+          </div>
+          <div class="step__when">2 July 2027</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--jade" id="glimpse">
+    <div class="portal-section__head">
+      <div class="eyebrow">A glimpse</div>
+      <h2 class="portal-section__title">
+        What to <span class="italic">expect.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        A curated selection of images and reflections from the
+        expedition, offered here not as documentation but as
+        orientation. The trip you take will not look exactly like
+        these. It will feel like them.
+      </p>
+
+      <div class="glimpse">
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--i">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-1.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate I · Black Star Gate, Accra</div>
+          </div>
+          <p class="glimpse__caption">
+            The Black Star was raised as a beacon. It does not discover
+            the returnee; it confirms what she already knew about where
+            she belongs.
+          </p>
+        </div>
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--ii">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-2.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate II · Aburi Botanical Gardens</div>
+          </div>
+          <p class="glimpse__caption">
+            A century of wisdom stands quietly around the visitor at
+            Aburi, each tree a long and patient witness. To walk among
+            them is to be corrected, gently, about how little of the
+            hurry we carry is actually required.
+          </p>
+        </div>
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--iii">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-3.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate III · The first bath of return</div>
+          </div>
+          <p class="glimpse__caption">
+            Immersion in some of the oldest and most consequential
+            waters of our sacred history. What the ancestors were
+            carried across, the returnee returns to.
+          </p>
+        </div>
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--iv">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-4.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate IV · After the long day</div>
+          </div>
+          <p class="glimpse__caption">
+            Elation at the end of a long day of movement. The work of
+            the table is quieter than the work of the road, and often
+            more clarifying.
+          </p>
+        </div>
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--v">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-5.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate V · The Jollof kitchen</div>
+          </div>
+          <p class="glimpse__caption">
+            Jollof rice made by the cohort's own hands under a
+            teacher's watchful correction. The recipe is the country;
+            the country is already in the recipe.
+          </p>
+        </div>
+
+        <div class="glimpse__item">
+          <div class="plate plate--wide plate--vi">
+            <div class="plate__fill" style="background-image: url('images/portal-gallery-6.jpg'); background-size: cover; background-position: center;"></div>
+            <div class="plate__label">Plate VI · Batik and the hand at work</div>
+          </div>
+          <p class="glimpse__caption">
+            The Batik studio, where the cohort learned to read wax as
+            a kind of writing. Every pattern is a sentence someone's
+            grandmother knew by heart.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div>
+        <div class="footer__mark">Onyx Isle</div>
+        <p class="footer__tagline">
+          <em>Members portal · The Ghana expedition</em>
+        </p>
+      </div>
+      <div class="footer__links">
+        <a href="main.html">← Return to the public site</a>
+        <a href="inquire.html">Contact your concierge</a>
+      </div>
+    </div>
+    <div class="footer__meta">
+      <span>&copy; April 2026 Onyx Isle</span>
+      <span>Members only · Do not distribute</span>
+    </div>
+  </footer>
+
+  <div class="corpus-badge">Part of the <a href="../index.html">Corpus</a> ecosystem &middot; &copy; April 2026</div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
