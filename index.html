@@ -3,275 +3,1419 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Onyx Isle — Connection that compounds.</title>
-  <meta name="description" content="International travel programs, executive sabbaticals, corporate retreats, and curated cohort experiences for leaders, teams, and institutions." />
+  <title>Members Portal · Onyx Isle</title>
+  <meta name="description" content="Members portal. Trip details, itinerary, resources, and guest next steps." />
+  <meta name="robots" content="noindex" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Scoped itinerary table styles. Lives here, not in style.css,
+       so the main stylesheet is unchanged. */
+    .day__agenda {
+      margin-top: 0.25rem;
+      font-family: inherit;
+      color: var(--ink);
+    }
+    .day__agenda-head,
+    .day__agenda-row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+    }
+    .day__agenda-head {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--ink-3);
+    }
+    .day__agenda-row {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .day__agenda-row:last-child {
+      border-bottom: none;
+    }
+    .day__agenda-row .cell-activity {
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .day__agenda-row .cell-location,
+    .day__agenda-row .cell-time {
+      color: var(--ink-2);
+    }
+    .day__agenda-row .cell-time.unset {
+      color: var(--ink-3);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 720px) {
+      .day__agenda-head { display: none; }
+      .day__agenda-row {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+        padding: 0.9rem 0;
+      }
+      .day__agenda-row .cell-location::before {
+        content: "at ";
+        color: var(--ink-3);
+      }
+      .day__agenda-row .cell-time:not(:empty)::before {
+        content: "Departs ";
+        color: var(--ink-3);
+      }
+    }
+
+    /* ---------- Carousel (glimpse section) ---------- */
+    .carousel {
+      position: relative;
+      margin: 1.5rem 0 0;
+    }
+    .carousel__viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--ink);
+      box-shadow: 0 10px 40px rgba(42, 29, 17, 0.18);
+    }
+    .carousel__slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.55s ease;
+      pointer-events: none;
+    }
+    .carousel__slide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .carousel__image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .carousel__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.75rem 2rem;
+      color: var(--paper);
+      background: linear-gradient(
+        to top,
+        rgba(42, 29, 17, 0.60) 0%,
+        rgba(42, 29, 17, 0.20) 28%,
+        transparent 55%
+      );
+      transition: background 0.35s ease;
+    }
+    .carousel__slide:hover .carousel__overlay,
+    .carousel__slide.show-caption .carousel__overlay {
+      background: linear-gradient(
+        to top,
+        rgba(42, 29, 17, 0.88) 0%,
+        rgba(42, 29, 17, 0.55) 40%,
+        rgba(42, 29, 17, 0.15) 72%,
+        transparent 100%
+      );
+    }
+    .carousel__title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+      line-height: 1.2;
+      letter-spacing: 0.005em;
+      color: var(--paper);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+    }
+    .carousel__caption {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(251, 246, 236, 0.92);
+      max-width: 60ch;
+      margin-top: 0.7rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .carousel__slide:hover .carousel__caption,
+    .carousel__slide.show-caption .carousel__caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .carousel__nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      background: rgba(251, 246, 236, 0.92);
+      border: none;
+      color: var(--ink);
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(42, 29, 17, 0.25);
+    }
+    .carousel__nav:hover {
+      background: var(--paper);
+      transform: translateY(-50%) scale(1.06);
+      box-shadow: 0 6px 18px rgba(42, 29, 17, 0.35);
+    }
+    .carousel__nav:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 3px;
+    }
+    .carousel__nav--prev { left: 1rem; }
+    .carousel__nav--next { right: 1rem; }
+    .carousel__dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.15rem;
+    }
+    .carousel__dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      border: none;
+      background: rgba(42, 29, 17, 0.22);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .carousel__dot.is-active {
+      background: var(--sage);
+      transform: scale(1.35);
+    }
+    .carousel__dot:hover:not(.is-active) {
+      background: rgba(42, 29, 17, 0.42);
+    }
+    .carousel__dot:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 3px;
+    }
+    @media (max-width: 640px) {
+      .carousel__overlay { padding: 1.25rem 1.25rem; }
+      .carousel__caption { font-size: 0.85rem; }
+      .carousel__nav { width: 2.25rem; height: 2.25rem; font-size: 1.25rem; }
+      .carousel__nav--prev { left: 0.5rem; }
+      .carousel__nav--next { right: 0.5rem; }
+    }
+
+    /* ---------- Payment section ---------- */
+    .payment-memo {
+      background: var(--paper-2);
+      border-left: 3px solid var(--clay);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0 1.75rem;
+      border-radius: 4px;
+    }
+    .payment-memo__label {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.55rem;
+      font-weight: 500;
+    }
+    .payment-memo__body {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink);
+      margin: 0;
+    }
+    .payment-memo__body strong {
+      font-weight: 600;
+      color: var(--sage-deep);
+    }
+    .payment-body {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink);
+      max-width: 65ch;
+      margin: 0 0 2rem;
+    }
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      margin-top: 1.5rem;
+      max-width: 720px;
+    }
+    .payment-method {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .payment-method__qr {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 1;
+      background: var(--paper-2);
+      border: 1px dashed rgba(42, 29, 17, 0.28);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .payment-method__qr-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 0.5rem;
+      background: var(--paper);
+      border-radius: 7px;
+    }
+    .payment-method__qr-label {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .payment-method__name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    .payment-method__type {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage-deep);
+      margin-bottom: 0.55rem;
+    }
+    .payment-method__note {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--ink-2);
+      max-width: 260px;
+    }
+    .payment-method__note em {
+      color: var(--clay);
+      font-style: italic;
+    }
+    @media (max-width: 640px) {
+      .payment-methods {
+        grid-template-columns: 1fr;
+        gap: 2.25rem;
+      }
+    }
+
+    /* ---------- Resource link (packing list) ---------- */
+    .resource__link {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      color: var(--sage-deep);
+      border-bottom: 1px solid var(--sage);
+      padding-bottom: 1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .resource__link:hover {
+      color: var(--clay);
+      border-color: var(--clay);
+    }
+
+    /* ---------- Glimpse section eyebrow contrast fix ---------- */
+    /* The base .eyebrow renders terracotta on the sage background,
+       which has poor contrast. Apply the same paper-on-sage treatment
+       already established by .jade .eyebrow in style.css. */
+    .portal-section--jade .eyebrow {
+      color: var(--paper);
+      background: rgba(251, 246, 236, 0.18);
+    }
+    .portal-section--jade .eyebrow::before {
+      background: var(--sun);
+    }
+  </style>
 </head>
 <body>
 
-  <nav class="nav">
-    <a href="index.html" class="nav__brand">Onyx Isle</a>
-    <ul class="nav__links">
-      <li><a href="index.html" class="active">Studio</a></li>
-      <li><a href="atelier.html">Atelier</a></li>
-      <li><a href="experience.html">Experience</a></li>
-      <li><a href="inquire.html">Inquire</a></li>
-      <li><a href="portal.html" class="nav__portal">Portal</a></li>
+  <div class="gate">
+    <div class="gate__inner">
+      <div class="gate__mark">Onyx Isle</div>
+      <div class="gate__line"></div>
+      <p class="gate__welcome">
+        A private threshold. If you have been expected, you will already
+        know the word that opens it.
+      </p>
+      <form class="gate__form">
+        <input
+          type="password"
+          class="gate__input"
+          placeholder="the word"
+          autocomplete="off"
+          autofocus
+        />
+        <button type="submit" class="gate__submit">Enter</button>
+        <p class="gate__error" aria-live="polite"></p>
+      </form>
+      <p class="gate__hint">
+        For guests of the current expedition. If you do not have the
+        word, please reach your point of contact.
+      </p>
+    </div>
+  </div>
+
+  <nav class="portal-nav">
+    <div>
+      <div class="portal-nav__brand">Onyx Isle</div>
+      <div class="portal-nav__trip">
+        <em>The Ghana expedition · July 2027</em>
+      </div>
+    </div>
+    <ul class="portal-nav__links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#milestones">Milestones</a></li>
+      <li><a href="#itinerary">Itinerary</a></li>
+      <li><a href="#resources">Resources</a></li>
+      <li><a href="#payment">Payment</a></li>
+      <li><a href="#next-steps">Next steps</a></li>
+      <li><a href="#glimpse">Glimpse</a></li>
     </ul>
   </nav>
 
-  <section class="hero">
-    <div class="hero__content">
-      <div>
-        <div class="hero__line"></div>
-        <h1 class="hero__title">
-          Connection<br />
-          that <span class="italic">compounds.</span>
-        </h1>
-        <p class="hero__sub">
-          Onyx Isle designs international travel programs, executive
-          sabbaticals, corporate retreats, and curated cohort experiences
-          for leaders, teams, and institutions. The discipline is to
-          engineer the conditions in which a single trip changes the
-          trajectory of a year.
-        </p>
-      </div>
-    </div>
-    <div class="hero__plate">
-      <div class="carousel carousel--hero" data-carousel data-interval="6000">
-        <div class="carousel__track">
-          <figure class="carousel__slide is-active"><img src="images/hero-main-1.jpg" alt="Onyx Isle hero image one" /></figure>
-          <figure class="carousel__slide"><img src="images/hero-main-2.jpg" alt="Onyx Isle hero image two" /></figure>
-          <figure class="carousel__slide"><img src="images/hero-main-3.jpg" alt="Onyx Isle hero image three" /></figure>
-        </div>
-        <div class="carousel__dots" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="statement">
-    <div class="statement__inner">
-      <div class="eyebrow statement__eyebrow">The premise</div>
-      <h2 class="statement__title">
-        Most travel pays for itself once. Onyx Isle is built for the kind
-        that pays for itself <span class="italic">for years.</span>
-      </h2>
-      <div class="statement__body prose">
-        <p>
-          The premise is direct. Curated travel, executed with discipline,
-          is among the most efficient instruments available for
-          accelerating leadership, deepening institutional relationships,
-          and producing the cross-cultural fluency that compounds across a
-          career. Onyx Isle exists to design and operate these experiences
-          for individuals and institutions for whom an off-the-shelf
-          itinerary will not produce the outcomes they need.
-        </p>
-        <p>
-          We work with executives, founders, university cohorts, corporate
-          teams, athletic delegations, and creative practices. The
-          itinerary is planned in granular detail, but the itinerary is
-          only a portion of the practice. The larger portion is the work
-          that surrounds it. The cultural preparation that lets a guest
-          arrive intellectually ready. The introductions that turn an
-          itinerary into a network. The facilitation that turns a group
-          into a cohort. The integration work that turns an experience
-          into a set of decisions made differently in the year that
-          follows.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="statement light">
-    <div class="statement__inner">
-      <div class="eyebrow statement__eyebrow">The promise</div>
-      <h2 class="statement__title">
-        Expand networks. Elevate perspective.
-        <span class="italic">Unlock opportunity.</span>
-      </h2>
-      <div class="statement__body prose">
-        <p>
-          Three outcomes, offered without qualification. Every program is
-          reverse-engineered from them. If a trip, a retreat, or a
-          commissioned engagement does not produce all three, we have not
-          delivered the work we agreed to do.
-        </p>
-      </div>
-
-      <div class="triplet">
-        <div class="triplet__item">
-          <div class="triplet__icon">
-            <svg class="oi-icon oi-icon--lg" viewBox="0 0 48 48" aria-hidden="true">
-              <circle cx="10" cy="11" r="2.4" fill="currentColor"/>
-              <circle cx="38" cy="15" r="2.4" fill="currentColor"/>
-              <circle cx="24" cy="38" r="2.4" fill="currentColor"/>
-              <circle cx="36" cy="33" r="1.8" fill="currentColor"/>
-              <circle cx="14" cy="28" r="1.8" fill="currentColor"/>
-              <line x1="10" y1="11" x2="38" y2="15"/>
-              <line x1="10" y1="11" x2="14" y2="28"/>
-              <line x1="38" y1="15" x2="36" y2="33"/>
-              <line x1="14" y1="28" x2="24" y2="38"/>
-              <line x1="36" y1="33" x2="24" y2="38"/>
-              <line x1="14" y1="28" x2="36" y2="33"/>
-            </svg>
-          </div>
-          <h3 class="triplet__verb">Expand.</h3>
-          <p class="triplet__body">
-            The value of a network is not the count of names inside it. It
-            is the speed at which a useful name surfaces when a moment
-            calls for one. Onyx Isle assembles cohorts whose members keep
-            turning out to be the right people, in the years that follow.
-          </p>
-        </div>
-
-        <div class="triplet__item">
-          <div class="triplet__icon">
-            <svg class="oi-icon oi-icon--lg" viewBox="0 0 48 48" aria-hidden="true">
-              <line x1="4" y1="34" x2="44" y2="34"/>
-              <circle cx="34" cy="16" r="6"/>
-              <line x1="24" y1="34" x2="34" y2="16" stroke-dasharray="1 3"/>
-              <line x1="14" y1="34" x2="14" y2="28"/>
-              <line x1="20" y1="34" x2="20" y2="30"/>
-            </svg>
-          </div>
-          <h3 class="triplet__verb">Elevate.</h3>
-          <p class="triplet__body">
-            Perspective is what becomes available when you have spent time
-            outside the environment in which you usually think. We
-            construct these vantage points with deliberate care, in
-            destinations and in company that reward sustained attention.
-          </p>
-        </div>
-
-        <div class="triplet__item">
-          <div class="triplet__icon">
-            <svg class="oi-icon oi-icon--lg" viewBox="0 0 48 48" aria-hidden="true">
-              <circle cx="14" cy="24" r="7"/>
-              <circle cx="14" cy="24" r="2" fill="currentColor"/>
-              <line x1="21" y1="24" x2="42" y2="24"/>
-              <line x1="34" y1="24" x2="34" y2="32"/>
-              <line x1="40" y1="24" x2="40" y2="30"/>
-            </svg>
-          </div>
-          <h3 class="triplet__verb">Unlock.</h3>
-          <p class="triplet__body">
-            Opportunity is usually present long before it becomes visible.
-            The work is to arrange the conditions under which the right
-            opportunity becomes legible to a person who is ready to act on
-            it.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="statement">
-    <div class="statement__inner">
-      <div class="split">
+  <section class="portal-hero" id="overview">
+    <div class="portal-hero__inner">
+      <div class="portal-hero__eyebrow">July 2027 · Accra, Ghana</div>
+      <h1 class="portal-hero__title">
+        The Ghana<br /><span class="italic">expedition.</span>
+      </h1>
+      <div class="portal-hero__meta">
         <div>
-          <div class="eyebrow mb-3">The work</div>
-          <h2 class="display-md">
-            We facilitate travel. We also facilitate the things travel
-            exists to <span class="italic">produce.</span>
-          </h2>
+          <div class="portal-hero__meta-label">Destination</div>
+          <div class="portal-hero__meta-value">Accra</div>
         </div>
         <div>
-          <div class="prose">
-            <p>
-              Onyx Isle plans and operates international expeditions,
-              executive sabbaticals, corporate and team retreats, and
-              curated cohort programs for universities and institutions.
-              We design commissioned curricula, deliver custom trainings
-              in cross-cultural practice and emerging technology, and
-              convene small high-trust gatherings that would not otherwise
-              come together.
+          <div class="portal-hero__meta-label">Dates</div>
+          <div class="portal-hero__meta-value">2 July to 12 July 2027</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Duration</div>
+          <div class="portal-hero__meta-value">10 Full Days, the 11th Day Reserved for Departure</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Lodging</div>
+          <div class="portal-hero__meta-value">Cantonments Embassy Gardens</div>
+        </div>
+        <div>
+          <div class="portal-hero__meta-label">Cohort</div>
+          <div class="portal-hero__meta-value">Friends and family, by invitation only</div>
+        </div>
+      </div>
+      <p class="portal-hero__intro">
+        What follows is everything a guest needs to know before arrival.
+        It is designed to be read in order or returned to as the trip
+        approaches. Milestones are updated as they are reached.
+        Resources continue to be added in the weeks leading up to
+        departure.
+      </p>
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--light" id="milestones">
+    <div class="portal-section__head">
+      <div class="eyebrow">Milestones</div>
+      <h2 class="portal-section__title">
+        The path <span class="italic">to the Motherland.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <div class="milestones">
+
+        <div class="milestone">
+          <div class="milestone__when">Completed · February 2026</div>
+          <div>
+            <h3 class="milestone__title">Invitation accepted</h3>
+            <p class="milestone__desc">
+              Welcome to the cohort. A brief orientation note and
+              introductions to the expedition team.
             </p>
-            <p>
-              The unglamorous portion of the practice is the portion most
-              clients eventually thank us for. The pre-travel preparation
-              that allows a guest to arrive intellectually ready. The
-              cultural and logistical groundwork on the destination side.
-              The introductions that only happen because someone has
-              taken the trouble to assemble them. The integration work
-              that turns the experience into a set of decisions actually
-              made in the year that follows.
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">Completed · April 2026</div>
+          <div>
+            <h3 class="milestone__title">Website launch</h3>
+            <p class="milestone__desc">
+              The members portal opens to the cohort. A first walk
+              through the activities, the cadence of the year ahead,
+              and the dates that will shape it.
             </p>
-            <p class="dim mt-3">
-              <em class="italic">
-                The destination is not the business. The transformation
-                is the business. The destination is the most reliable
-                instrument we have found for producing it.
-              </em>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">August 2026</div>
+          <div>
+            <h3 class="milestone__title">Scout and book airfare</h3>
+            <p class="milestone__desc">
+              Begin researching flights into Kotoka International
+              Airport. Our team is available for routing guidance. We
+              recommend booking early while fares remain reasonable.
             </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">October 2026</div>
+          <div>
+            <h3 class="milestone__title">Readings and cultural grounding</h3>
+            <p class="milestone__desc">
+              Release of the curated list of readings, interviews, and
+              short films intended to prepare guests for what the
+              itinerary will open. The materials are selected to be
+              returned to across the year, not consumed in one sitting.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">November 2026</div>
+          <div>
+            <h3 class="milestone__title">First deposit due</h3>
+            <p class="milestone__desc">
+              The first of three installments. Payment instructions
+              and receipts are handled privately with each guest.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">December 2026</div>
+          <div>
+            <h3 class="milestone__title">Last call for airfare</h3>
+            <p class="milestone__desc">
+              For optimal pricing, airfare should be booked no later
+              than this month. Our team remains available for routing
+              and coordination with other guests.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">February 2027</div>
+          <div>
+            <h3 class="milestone__title">Second deposit due</h3>
+            <p class="milestone__desc">
+              Guests submit their second installment. Begin to draft
+              any questions that you may have and bring them to the
+              Spring Checkpoint Session.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">March 2027</div>
+          <div>
+            <h3 class="milestone__title">Spring Checkpoint Session</h3>
+            <p class="milestone__desc">
+              A virtual gathering with the full cohort. Instruction on
+              vaccinations, passport renewal where needed, and the
+              upcoming visa application, paired with a check in on
+              readings and questions as the trip comes into closer view.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">April 2027</div>
+          <div>
+            <h3 class="milestone__title">Third and final deposit due</h3>
+            <p class="milestone__desc">
+              The final installment. With this, the cohort is
+              financially committed and logistics solidify for the
+              months ahead.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">May 2027</div>
+          <div>
+            <h3 class="milestone__title">Apply for visa</h3>
+            <p class="milestone__desc">
+              Visa applications are submitted and passports are sent to
+              the Embassy of Ghana. We provide the detailed checklist
+              and guide the process, though each guest's application
+              belongs to them.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">June 2027</div>
+          <div>
+            <h3 class="milestone__title">Pre-departure session</h3>
+            <p class="milestone__desc">
+              Packing list, final questions, contact sheet, lodging
+              confirmation, and arrival time coordination. The final
+              virtual gathering of the cohort before the trip begins.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">1 July 2027</div>
+          <div>
+            <h3 class="milestone__title">Depart from America</h3>
+            <p class="milestone__desc">
+              Transatlantic travel. The cohort converges within a
+              single window so that the first evening in Accra can
+              begin as one group rather than a trickle of arrivals.
+            </p>
+          </div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone__when">2 July 2027</div>
+          <div>
+            <h3 class="milestone__title">Arrival in Ghana</h3>
+            <p class="milestone__desc">
+              Private ground transportation from Kotoka International
+              Airport to our base at Cantonments Embassy Gardens.
+              Welcome dinner that evening. The expedition begins.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section" id="itinerary">
+    <div class="portal-section__head">
+      <div class="eyebrow">Itinerary</div>
+      <h2 class="portal-section__title">
+        The shape of <span class="italic">the ten days.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        What follows is deliberate and also deliberately incomplete.
+        Every cohort has moments that are not on the page, and those
+        moments are the point. Departure times are listed where they
+        have been confirmed and will be filled in as the itinerary
+        is finalized.
+      </p>
+
+      <!-- DAY 1 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day one</div>
+          <h3 class="day__title">Arrival and welcome</h3>
+          <div class="day__date">2 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Arrival</div>
+              <div class="cell-location">Kotoka International Airport</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Grocery stop</div>
+              <div class="cell-location">Palace Mall</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest and acclimation</div>
+              <div class="cell-location">Cantonments Embassy Gardens</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Welcome dinner</div>
+              <div class="cell-location">Buka</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Optional: night out</div>
+              <div class="cell-location">Alley Bar</div>
+              <div class="cell-time">10:00 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day two</div>
+          <h3 class="day__title">First rhythms of the city</h3>
+          <div class="day__date">3 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Morning workout with Dickson</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Basket weaving class and lunch</div>
+              <div class="cell-location">Ozzies Beach Palace</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Accra Goods Market</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time">1:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Teabaa</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day three</div>
+          <h3 class="day__title">The coast and its memory</h3>
+          <div class="day__date">4 July · Central Region</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Kakum National Park canopy walk</div>
+              <div class="cell-location">Odumase</div>
+              <div class="cell-time">3:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Cape Coast slave dungeons</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Assin Manso slave river</div>
+              <div class="cell-location">Assin Manso</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">80/20</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day four</div>
+          <h3 class="day__title">At the table</h3>
+          <div class="day__date">5 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Jollof rice cooking class</div>
+              <div class="cell-location">Food Haven</div>
+              <div class="cell-time">10:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Sandbox Beach Club or Alora Beach Resort</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 5 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day five</div>
+          <h3 class="day__title">The sculpted witness</h3>
+          <div class="day__date">6 July · Ada Foah</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Nkyinkyim Museum</div>
+              <div class="cell-location">Ada Foah</div>
+              <div class="cell-time">8:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Living Room</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Night out</div>
+              <div class="cell-location">Venue to be confirmed</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 6 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day six</div>
+          <h3 class="day__title">Open city, the hand at work</h3>
+          <div class="day__date">7 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Open exploration, morning</div>
+              <div class="cell-location">Accra, guest's choice</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Batik making</div>
+              <div class="cell-location">Accra Art D'strict</div>
+              <div class="cell-time">1:00 PM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Afrikiko</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 7 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day seven</div>
+          <h3 class="day__title">Nation and memory</h3>
+          <div class="day__date">8 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Chocolate making</div>
+              <div class="cell-location">Bioko, Accra</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Kwame Nkrumah Museum</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Photoshoot</div>
+              <div class="cell-location">Black Star Gate</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Rockz Waakye</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 8 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day eight</div>
+          <h3 class="day__title">Canopy and cascade</h3>
+          <div class="day__date">9 July · Aburi Gardens &amp; Waterfalls</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Aburi Gardens and lunch</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time">7:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Oboadaka Waterfalls</div>
+              <div class="cell-location">Central Region</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Honey Suckle</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 9 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day nine</div>
+          <h3 class="day__title">The Pan-African inheritance</h3>
+          <div class="day__date">10 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">W. E. B. Du Bois Center</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest day and open exploration</div>
+              <div class="cell-location">Accra</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Dinner</div>
+              <div class="cell-location">Indulge Accra</div>
+              <div class="cell-time">7:00 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 10 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day ten</div>
+          <h3 class="day__title">Gathered in closing</h3>
+          <div class="day__date">11 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Church service</div>
+              <div class="cell-location">Empowerment Worship Center</div>
+              <div class="cell-time">9:00 AM</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Rest day and open exploration</div>
+              <div class="cell-location">Accra, guest's choice</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Final dinner</div>
+              <div class="cell-location">Skybar or Zen Garden</div>
+              <div class="cell-time">6:00 PM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 11 -->
+      <div class="day">
+        <div class="day__label">
+          <div class="day__number">Day eleven</div>
+          <h3 class="day__title">Departure</h3>
+          <div class="day__date">12 July · Accra</div>
+        </div>
+        <div>
+          <div class="day__agenda">
+            <div class="day__agenda-head">
+              <div>Activity</div>
+              <div>Location</div>
+              <div>Departure</div>
+            </div>
+            <div class="day__agenda-row">
+              <div class="cell-activity">Departures</div>
+              <div class="cell-location">Kotoka International Airport</div>
+              <div class="cell-time unset">To be confirmed</div>
+            </div>
+          </div>
+          <p class="day__body" style="margin-top: 1.25rem;">
+            Private transfers to the airport on each guest's timing.
+            Safe travels home. The integration session with the full
+            cohort will be scheduled in the weeks following return,
+            details to follow.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--light" id="resources">
+    <div class="portal-section__head">
+      <div class="eyebrow">Resources</div>
+      <h2 class="portal-section__title">
+        Everything you need <span class="italic">for the road.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        Organized for easy return. This section is updated in the weeks
+        leading up to departure. If you do not see something you need,
+        please ask.
+      </p>
+
+      <div class="resource-grid">
+        <div class="resource">
+          <h3 class="resource__title">Passport and visa</h3>
+          <p class="resource__body">
+            Your passport must be valid for at least six months beyond
+            the date of entry. Visa requirements vary by country of
+            citizenship. We do not process the visa on your behalf; we
+            guide you through the application and provide the detailed
+            documentation checklist during the March Checkpoint Session.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Vaccinations and health</h3>
+          <p class="resource__body">
+            Yellow fever vaccination is required for entry. Additional
+            recommendations include hepatitis A, typhoid, and
+            anti-malarial medication. We will review your specific
+            situation during the one-on-one consultation in March.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Packing</h3>
+          <p class="resource__body">
+            Lightweight, breathable fabrics. Long sleeves for mornings
+            and evenings. A modest option for cultural sites.
+            Comfortable shoes for walking. Formal dinners are rare and
+            relaxed. The detailed packing list is a single-page
+            reference, organized by theme and shaped to the climate
+            and cadence of this itinerary. Download the PDF, print it
+            if that helps, and consult it as packing begins. The list
+            is brief by intention; trust it.
+            <a class="resource__link" href="documents/onyx-isle-packing-list.pdf" download="onyx-isle-packing-list.pdf">
+              Download the packing list (PDF)
+            </a>
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Currency and connectivity</h3>
+          <p class="resource__body">
+            The Ghanaian cedi is the local currency. Most expenses are
+            handled through the expedition; personal spending money is
+            modest. Connectivity is good in the cities and variable in
+            the rural portions of the itinerary. Local SIM cards can be
+            arranged on arrival.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Cultural grounding</h3>
+          <p class="resource__body">
+            The curated reading and viewing list is released in
+            October 2026 and returned to in depth at the March
+            Checkpoint Session. Engagement with the materials is not
+            required but is strongly encouraged. The trip lands
+            differently for guests who arrive prepared for the
+            encounters it makes possible.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Dietary and accessibility</h3>
+          <p class="resource__body">
+            Please share any dietary restrictions, allergies, and
+            accessibility considerations through the intake form or
+            directly with our team. We accommodate at every meal and
+            every venue, and the earlier we know, the more thoroughly
+            we can arrange.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Safety and emergency contact</h3>
+          <p class="resource__body">
+            Our team is reachable at any hour throughout the
+            expedition. A full emergency contact sheet, including
+            local medical resources and embassy numbers, is
+            distributed at the pre-departure convening.
+          </p>
+        </div>
+        <div class="resource">
+          <h3 class="resource__title">Guest directory</h3>
+          <p class="resource__body">
+            A brief directory of your fellow travelers, with consent,
+            will be shared at the pre-departure convening so that
+            introductions already in progress can become introductions
+            already made.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section" id="payment">
+    <div class="portal-section__head">
+      <div class="eyebrow">Payment</div>
+      <h2 class="portal-section__title">
+        How to <span class="italic">settle the deposits.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        Deposits are due on the cadence set out in the Milestones
+        section above. Two methods are available. A small instruction
+        concerning the memo line applies to both, so that every payment
+        is matched correctly to the guest on receipt.
+      </p>
+
+      <div class="payment-memo">
+        <div class="payment-memo__label">Memo line</div>
+        <p class="payment-memo__body">
+          Please enter your first name, last initial, and
+          <strong>GH27</strong> in the memo line of every payment. As
+          an example: <strong>ChelleJGH27</strong>. This single step is
+          what allows us to reconcile deposits quickly and send your
+          confirmation on the same day.
+        </p>
+      </div>
+
+      <p class="payment-body">
+        Upon receipt of your deposit, a confirmation email will be
+        sent containing a short survey. Please complete the survey at
+        your earliest opportunity; the answers shape the itinerary in
+        small but meaningful ways, aligning final arrangements with
+        the preferences of the assembled cohort.
+      </p>
+
+      <div class="payment-methods">
+        <div class="payment-method">
+          <div class="payment-method__qr" aria-label="Zelle QR code">
+            <span class="payment-method__qr-label">QR code</span>
+            <img
+              src="images/portal-payment-zelle.png"
+              alt="Zelle QR code for payment"
+              class="payment-method__qr-img"
+              onerror="this.style.display='none';"
+            />
+          </div>
+          <div class="payment-method__name">Zelle</div>
+          <div class="payment-method__type">Cash payments</div>
+          <div class="payment-method__note">
+            <em>Preferred Method.</em> The receiving account is held
+            under Slate 312, LLC, based in Chicago, Illinois. Please
+            confirm the account displayed is a Business Complete
+            Checking account ending in 7096 before completing the
+            transfer.
+          </div>
+        </div>
+        <div class="payment-method">
+          <div class="payment-method__qr" aria-label="Chase Payment Portal QR code">
+            <span class="payment-method__qr-label">QR code</span>
+            <img
+              src="images/portal-payment-chase.png"
+              alt="Chase Payment Portal QR code"
+              class="payment-method__qr-img"
+              onerror="this.style.display='none';"
+            />
+          </div>
+          <div class="payment-method__name">Chase Payment Portal</div>
+          <div class="payment-method__type">Credit card payments</div>
+          <div class="payment-method__note">
+            If paying by credit card, please reach out to request
+            access details for the Chase Payment Portal.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section jade">
-    <div class="shell shell--narrow">
-      <div class="eyebrow mb-3">From the field</div>
-      <div class="dispatch">
-        <div class="dispatch__head">
-          <div class="dispatch__num">Dispatch No. IX</div>
-          <div class="dispatch__date">Accra to Kumasi · Spring</div>
+  <section class="portal-section portal-section--light" id="next-steps">
+    <div class="portal-section__head">
+      <div class="eyebrow">Guest next steps</div>
+      <h2 class="portal-section__title">
+        The quiet preparation <span class="italic">that lets the trip land.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        A short sequence of actions to take in the months before
+        departure. Each is small by design. Together, they are the
+        groundwork that lets the expedition do its work.
+      </p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step__num">One</div>
+          <div>
+            <h3 class="step__title">Confirm passport validity</h3>
+            <p class="step__desc">
+              Check that your passport is valid through at least
+              August 2027. If it is not, begin the renewal process
+              immediately and let our team know so we can offer
+              support well ahead of the visa application window.
+            </p>
+          </div>
+          <div class="step__when">By December 2026</div>
         </div>
-        <h3 class="dispatch__title">
-          On the value of what cannot be seen from the hotel.
-        </h3>
-        <p class="dispatch__body">
-          We were nine, which is the right number for an expedition of
-          this kind. Large enough that introductions multiply. Small
-          enough that no traveler is alone with a first impression. On
-          the morning we left the city, our host asked a question that
-          reorganized the rest of the week for each of us in a different
-          way. I will not repeat the question here. I will only say that
-          it would not have been asked in a larger group, and would not
-          have landed on a person who had not already given the place
-          three days to begin its work. This is the practice. Not the
-          destination. Not the itinerary. The patient construction of
-          the conditions under which the right question can find the
-          right listener.
-        </p>
-        <div class="dispatch__signature">— From a recent expedition</div>
+
+        <div class="step">
+          <div class="step__num">Two</div>
+          <div>
+            <h3 class="step__title">Complete the guest intake form</h3>
+            <p class="step__desc">
+              Dietary preferences, accessibility considerations,
+              emergency contact, travel history, and the goals you are
+              bringing to the expedition. Reach out if the link has
+              not arrived.
+            </p>
+          </div>
+          <div class="step__when">By February 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Three</div>
+          <div>
+            <h3 class="step__title">Schedule your logistics consultation</h3>
+            <p class="step__desc">
+              A thirty minute call with our logistics lead to review
+              passport, visa, vaccinations, and travel insurance.
+              This call is the substance of the March Checkpoint
+              Session.
+            </p>
+          </div>
+          <div class="step__when">During March 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Four</div>
+          <div>
+            <h3 class="step__title">Complete the review of all ground materials</h3>
+            <p class="step__desc">
+              The curated readings, interviews, and short films released
+              in October 2026 are designed to prepare the cohort for
+              the encounters the itinerary opens. Complete your review
+              ahead of the Spring Checkpoint Session so that the March
+              conversation is grounded in shared material.
+            </p>
+          </div>
+          <div class="step__when">By March 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Five</div>
+          <div>
+            <h3 class="step__title">Attend the pre-departure convening</h3>
+            <p class="step__desc">
+              Our final virtual gathering with the full cohort.
+              Questions answered, introductions renewed, the shape of
+              the trip clarified. Attendance is requested of every
+              guest.
+            </p>
+          </div>
+          <div class="step__when">June 2027</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Six</div>
+          <div>
+            <h3 class="step__title">Pack with the list in hand</h3>
+            <p class="step__desc">
+              Guests should begin packing no later than the week of
+              June 20th, so that every item is procured and settled
+              well before the day of departure. This lead time exists
+              for a reason: guests who pack early arrive relaxed and
+              confident rather than hurried. The packing list itself is
+              brief, specific, and built from years of watching
+              travelers bring either too much or the wrong thing.
+              Trust the list.
+            </p>
+          </div>
+          <div class="step__when">Week of 20 June</div>
+        </div>
+
+        <div class="step">
+          <div class="step__num">Seven</div>
+          <div>
+            <h3 class="step__title">Arrive</h3>
+            <p class="step__desc">
+              We will be there to meet you. The rest is the work we
+              have been preparing for together.
+            </p>
+          </div>
+          <div class="step__when">2 July 2027</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="statement">
-    <div class="statement__inner">
-      <div class="eyebrow statement__eyebrow">Begin</div>
-      <h2 class="statement__title">
-        If the description fits, the next step is a
-        <span class="italic">written exchange.</span>
+  <section class="portal-section portal-section--jade" id="glimpse">
+    <div class="portal-section__head">
+      <div class="eyebrow">A glimpse</div>
+      <h2 class="portal-section__title">
+        What to <span class="italic">expect.</span>
       </h2>
-      <div class="statement__body prose">
-        <p>
-          Onyx Isle works by introduction and by inquiry. There is no
-          catalog, no fixed itinerary, and no posted price list. Every
-          engagement begins with a written conversation about what you
-          are considering and what would make the trip worth taking. We
-          respond personally and within two business days.
-        </p>
-      </div>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        A curated selection of images and reflections from the
+        expedition, offered here not as documentation but as
+        orientation. The trip you take will not look exactly like
+        these. It will feel like them.
+      </p>
 
-      <div class="cta-list">
-        <a href="atelier.html" class="cta-list__item">
-          Meet the atelier
-          <span class="arrow">→</span>
-        </a>
-        <a href="experience.html" class="cta-list__item">
-          See recent experiences
-          <span class="arrow">→</span>
-        </a>
-        <a href="inquire.html" class="cta-list__item">
-          Begin a conversation
-          <span class="arrow">→</span>
-        </a>
+      <div class="carousel" id="glimpseCarousel">
+        <div class="carousel__viewport">
+
+          <div class="carousel__slide is-active" data-index="0">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-1.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Black Star Gate, Accra</div>
+              <div class="carousel__caption">
+                The Black Star was raised as a beacon. It does not
+                discover the returnee; it confirms what she already
+                knew about where she belongs.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="1">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-2.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Aburi Botanical Gardens</div>
+              <div class="carousel__caption">
+                A century of wisdom stands quietly around the visitor
+                at Aburi, each tree a long and patient witness. To
+                walk among them is to be corrected, gently, about how
+                little of the hurry we carry is actually required.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="2">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-3.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">The first bath of return</div>
+              <div class="carousel__caption">
+                Immersion in some of the oldest and most consequential
+                waters of our sacred history. What the ancestors were
+                carried across, the returnee returns to.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="3">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-4.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">After the long day</div>
+              <div class="carousel__caption">
+                Elation at the end of a long day of movement. The
+                work of the table is quieter than the work of the
+                road, and often more clarifying.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="4">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-5.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">The Jollof kitchen</div>
+              <div class="carousel__caption">
+                Jollof rice made by the cohort's own hands under a
+                teacher's watchful correction. The recipe is the
+                country; the country is already in the recipe.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="5">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-6.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Batik and the hand at work</div>
+              <div class="carousel__caption">
+                The Batik studio, where the cohort learned to read
+                wax as a kind of writing. Every pattern is a sentence
+                someone's grandmother knew by heart.
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel__nav carousel__nav--prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel__nav carousel__nav--next" aria-label="Next image">&#8250;</button>
+        </div>
+
+        <div class="carousel__dots" role="tablist" aria-label="Gallery navigation">
+          <button class="carousel__dot is-active" aria-label="Slide 1"></button>
+          <button class="carousel__dot" aria-label="Slide 2"></button>
+          <button class="carousel__dot" aria-label="Slide 3"></button>
+          <button class="carousel__dot" aria-label="Slide 4"></button>
+          <button class="carousel__dot" aria-label="Slide 5"></button>
+          <button class="carousel__dot" aria-label="Slide 6"></button>
+        </div>
       </div>
     </div>
   </section>
@@ -280,24 +1424,71 @@
     <div class="footer__grid">
       <div>
         <div class="footer__mark">Onyx Isle</div>
-        <p class="footer__tagline"><em>Connection that compounds.</em></p>
+        <p class="footer__tagline">
+          <em>Members portal · The Ghana expedition</em>
+        </p>
       </div>
       <div class="footer__links">
-        <a href="index.html">Studio</a>
-        <a href="atelier.html">Atelier</a>
-        <a href="experience.html">Experience</a>
-        <a href="inquire.html">Inquire</a>
-        <a href="portal.html">Members portal</a>
-        <a href="https://www.linkedin.com/in/landynjordan" target="_blank" rel="noopener">LinkedIn</a>
+        <span>Email Trip Hosts</span>
+        <a href="mailto:onyxislegh@gmail.com">onyxislegh@gmail.com</a>
       </div>
     </div>
     <div class="footer__meta">
-      <span>© MMXXVI Onyx Isle</span>
-      <span>By invitation</span>
+      <span>&copy; April 2026 Onyx Isle</span>
+      <span>Members only · Do not distribute</span>
     </div>
   </footer>
 
+  <div class="corpus-badge">Part of the <a href="https://onyxisle.community/">Corpus</a> ecosystem &middot; &copy; April 2026</div>
+
   <script src="js/main.js"></script>
-<div class="corpus-badge">Part of the <a href="https://corpus.community">Corpus</a> ecosystem &middot; &copy; 2026</div>
+  <script>
+    // Glimpse carousel: self-contained, no external dependencies.
+    (function () {
+      var root = document.getElementById('glimpseCarousel');
+      if (!root) return;
+
+      var slides = root.querySelectorAll('.carousel__slide');
+      var dots   = root.querySelectorAll('.carousel__dot');
+      var prev   = root.querySelector('.carousel__nav--prev');
+      var next   = root.querySelector('.carousel__nav--next');
+      var count  = slides.length;
+      var current = 0;
+
+      function goTo(idx) {
+        slides[current].classList.remove('is-active');
+        slides[current].classList.remove('show-caption');
+        dots[current].classList.remove('is-active');
+        current = ((idx % count) + count) % count;
+        slides[current].classList.add('is-active');
+        dots[current].classList.add('is-active');
+      }
+
+      prev.addEventListener('click', function () { goTo(current - 1); });
+      next.addEventListener('click', function () { goTo(current + 1); });
+
+      Array.prototype.forEach.call(dots, function (dot, i) {
+        dot.addEventListener('click', function () { goTo(i); });
+      });
+
+      // Keyboard navigation when the carousel has focus
+      root.setAttribute('tabindex', '0');
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
+      });
+
+      // Touch devices: tap the active slide to toggle the caption overlay.
+      var isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+      if (isTouch) {
+        Array.prototype.forEach.call(slides, function (slide) {
+          slide.addEventListener('click', function (ev) {
+            if (ev.target.closest('.carousel__nav')) return;
+            slide.classList.toggle('show-caption');
+          });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

@@ -1795,99 +1795,33 @@ a.channel__value:hover { color: var(--sage-deep); }
 }
 .portal-section--jade .glimpse__caption { color: rgba(251, 246, 236, 0.85); }
 
-/* ---------- 11. IMAGE RENDERING INSIDE PLATES ---------- */
-.plate__img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* ---------- 12. CAROUSELS ---------- */
-.carousel {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: var(--r-xl);
-  background: var(--sand);
-  box-shadow: var(--shadow-md);
-}
-.carousel--hero    { aspect-ratio: auto; height: 100%; min-height: 420px; }
-.carousel--cinema  { aspect-ratio: 21 / 9; }
-.carousel--gallery { aspect-ratio: 16 / 9; }
-
-.carousel__track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
-}
-.carousel__slide {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  pointer-events: none;
-}
-.carousel__slide.is-active {
-  opacity: 1;
-  pointer-events: auto;
-  z-index: 1;
-}
-.carousel__slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.carousel__caption {
-  position: absolute;
-  left: var(--s3);
-  right: var(--s3);
-  bottom: var(--s3);
-  padding: var(--s2) var(--s3);
-  background: rgba(42, 29, 17, 0.78);
-  color: var(--paper);
-  font-family: "DM Sans", sans-serif;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  border-radius: var(--r-md);
-  backdrop-filter: blur(4px);
-  max-width: min(640px, 85%);
-}
-
-/* Navigation dots */
-.carousel__dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: var(--s2);
+/* --- CORPUS ECOSYSTEM BADGE --- */
+.corpus-badge {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  z-index: 2;
-  pointer-events: auto;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  background: #1A2744;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1px;
 }
-.carousel__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid var(--paper);
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+.corpus-badge a {
+  color: #C4A265;
+  text-decoration: none;
+  font-weight: 600;
 }
-.carousel__dot:hover { transform: scale(1.2); }
-.carousel__dot.is-active { background: var(--paper); }
-
-/* Pause-on-hover visual cue */
-.carousel:hover .carousel__dot.is-active { background: var(--clay-soft); }
-
-@media (max-width: 720px) {
-  .carousel--hero    { min-height: 320px; }
-  .carousel__caption { font-size: 0.8rem; left: var(--s2); right: var(--s2); bottom: var(--s2); }
+.corpus-badge a:hover { color: #E8D5B7; }
+.beta-tag {
+  display: inline-block;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(196,162,101,0.2);
+  color: #C4A265;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-left: 0.25rem;
+  vertical-align: super;
 }
