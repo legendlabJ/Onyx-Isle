@@ -72,6 +72,270 @@
         color: var(--ink-3);
       }
     }
+
+    /* ---------- Carousel (glimpse section) ---------- */
+    .carousel {
+      position: relative;
+      margin: 1.5rem 0 0;
+    }
+    .carousel__viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--ink);
+      box-shadow: 0 10px 40px rgba(42, 29, 17, 0.18);
+    }
+    .carousel__slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.55s ease;
+      pointer-events: none;
+    }
+    .carousel__slide.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .carousel__image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .carousel__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.75rem 2rem;
+      color: var(--paper);
+      background: linear-gradient(
+        to top,
+        rgba(42, 29, 17, 0.60) 0%,
+        rgba(42, 29, 17, 0.20) 28%,
+        transparent 55%
+      );
+      transition: background 0.35s ease;
+    }
+    .carousel__slide:hover .carousel__overlay,
+    .carousel__slide.show-caption .carousel__overlay {
+      background: linear-gradient(
+        to top,
+        rgba(42, 29, 17, 0.88) 0%,
+        rgba(42, 29, 17, 0.55) 40%,
+        rgba(42, 29, 17, 0.15) 72%,
+        transparent 100%
+      );
+    }
+    .carousel__title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+      line-height: 1.2;
+      letter-spacing: 0.005em;
+      color: var(--paper);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+    }
+    .carousel__caption {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(251, 246, 236, 0.92);
+      max-width: 60ch;
+      margin-top: 0.7rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .carousel__slide:hover .carousel__caption,
+    .carousel__slide.show-caption .carousel__caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .carousel__nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      background: rgba(251, 246, 236, 0.92);
+      border: none;
+      color: var(--ink);
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(42, 29, 17, 0.25);
+    }
+    .carousel__nav:hover {
+      background: var(--paper);
+      transform: translateY(-50%) scale(1.06);
+      box-shadow: 0 6px 18px rgba(42, 29, 17, 0.35);
+    }
+    .carousel__nav:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 3px;
+    }
+    .carousel__nav--prev { left: 1rem; }
+    .carousel__nav--next { right: 1rem; }
+    .carousel__dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.15rem;
+    }
+    .carousel__dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      border: none;
+      background: rgba(42, 29, 17, 0.22);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .carousel__dot.is-active {
+      background: var(--sage);
+      transform: scale(1.35);
+    }
+    .carousel__dot:hover:not(.is-active) {
+      background: rgba(42, 29, 17, 0.42);
+    }
+    .carousel__dot:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 3px;
+    }
+    @media (max-width: 640px) {
+      .carousel__overlay { padding: 1.25rem 1.25rem; }
+      .carousel__caption { font-size: 0.85rem; }
+      .carousel__nav { width: 2.25rem; height: 2.25rem; font-size: 1.25rem; }
+      .carousel__nav--prev { left: 0.5rem; }
+      .carousel__nav--next { right: 0.5rem; }
+    }
+
+    /* ---------- Payment section ---------- */
+    .payment-memo {
+      background: var(--paper-2);
+      border-left: 3px solid var(--clay);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0 1.75rem;
+      border-radius: 4px;
+    }
+    .payment-memo__label {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.55rem;
+      font-weight: 500;
+    }
+    .payment-memo__body {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink);
+      margin: 0;
+    }
+    .payment-memo__body strong {
+      font-weight: 600;
+      color: var(--sage-deep);
+    }
+    .payment-body {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--ink);
+      max-width: 65ch;
+      margin: 0 0 2rem;
+    }
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      margin-top: 1.5rem;
+      max-width: 720px;
+    }
+    .payment-method {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .payment-method__qr {
+      width: 100%;
+      max-width: 220px;
+      aspect-ratio: 1;
+      background: var(--paper-2);
+      border: 1px dashed rgba(42, 29, 17, 0.28);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .payment-method__qr-label {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .payment-method__name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    .payment-method__type {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage-deep);
+      margin-bottom: 0.55rem;
+    }
+    .payment-method__note {
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--ink-2);
+      max-width: 260px;
+    }
+    .payment-method__note em {
+      color: var(--clay);
+      font-style: italic;
+    }
+    @media (max-width: 640px) {
+      .payment-methods {
+        grid-template-columns: 1fr;
+        gap: 2.25rem;
+      }
+    }
+
+    /* ---------- Resource link (packing list) ---------- */
+    .resource__link {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      color: var(--sage-deep);
+      border-bottom: 1px solid var(--sage);
+      padding-bottom: 1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+    .resource__link:hover {
+      color: var(--clay);
+      border-color: var(--clay);
+    }
   </style>
 </head>
 <body>
@@ -114,6 +378,7 @@
       <li><a href="#milestones">Milestones</a></li>
       <li><a href="#itinerary">Itinerary</a></li>
       <li><a href="#resources">Resources</a></li>
+      <li><a href="#payment">Payment</a></li>
       <li><a href="#next-steps">Next steps</a></li>
       <li><a href="#glimpse">Glimpse</a></li>
     </ul>
@@ -807,6 +1072,18 @@
           </p>
         </div>
         <div class="resource">
+          <h3 class="resource__title">Packing list</h3>
+          <p class="resource__body">
+            A single-page reference, organized by theme and shaped to
+            the climate and cadence of this itinerary. Download the
+            PDF, print it if that helps, and consult it as packing
+            begins. The list is brief by intention; trust it.
+            <a class="resource__link" href="documents/onyx-isle-packing-list.pdf" target="_blank" rel="noopener">
+              Download the packing list (PDF)
+            </a>
+          </p>
+        </div>
+        <div class="resource">
           <h3 class="resource__title">Currency and connectivity</h3>
           <p class="resource__body">
             The Ghanaian cedi is the local currency. Most expenses are
@@ -859,7 +1136,65 @@
     </div>
   </section>
 
-  <section class="portal-section" id="next-steps">
+  <section class="portal-section" id="payment">
+    <div class="portal-section__head">
+      <div class="eyebrow">Payment</div>
+      <h2 class="portal-section__title">
+        How to <span class="italic">settle the deposits.</span>
+      </h2>
+    </div>
+    <div class="portal-section__inner">
+      <p class="portal-intro">
+        Deposits are due on the cadence set out in the Milestones
+        section above. Two methods are available. A small instruction
+        concerning the memo line applies to both, so that every payment
+        is matched correctly to the guest on receipt.
+      </p>
+
+      <div class="payment-memo">
+        <div class="payment-memo__label">Memo line</div>
+        <p class="payment-memo__body">
+          Please enter your first name, last initial, and
+          <strong>GH27</strong> in the memo line of every payment. As
+          an example: <strong>ChelleJGH27</strong>. This single step is
+          what allows us to reconcile deposits quickly and send your
+          confirmation on the same day.
+        </p>
+      </div>
+
+      <p class="payment-body">
+        Upon receipt of your deposit, a confirmation email will be
+        sent containing a short survey. Please complete the survey at
+        your earliest opportunity; the answers shape the itinerary in
+        small but meaningful ways, aligning final arrangements with
+        the preferences of the assembled cohort.
+      </p>
+
+      <div class="payment-methods">
+        <div class="payment-method">
+          <div class="payment-method__qr" aria-label="Zelle QR code placeholder">
+            <span class="payment-method__qr-label">QR code</span>
+          </div>
+          <div class="payment-method__name">Zelle</div>
+          <div class="payment-method__type">Cash payments</div>
+          <div class="payment-method__note"><em>Preferred method</em></div>
+        </div>
+        <div class="payment-method">
+          <div class="payment-method__qr" aria-label="Chase Payment Portal QR code placeholder">
+            <span class="payment-method__qr-label">QR code</span>
+          </div>
+          <div class="payment-method__name">Chase Payment Portal</div>
+          <div class="payment-method__type">Credit card payments</div>
+          <div class="payment-method__note">
+            If paying by credit card, please reach out to request
+            access details for the Chase Payment Portal.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="portal-section portal-section--light" id="next-steps">
     <div class="portal-section__head">
       <div class="eyebrow">Guest next steps</div>
       <h2 class="portal-section__title">
@@ -993,81 +1328,94 @@
         these. It will feel like them.
       </p>
 
-      <div class="glimpse">
+      <div class="carousel" id="glimpseCarousel">
+        <div class="carousel__viewport">
 
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--i">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-1.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate I · Black Star Gate, Accra</div>
+          <div class="carousel__slide is-active" data-index="0">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-1.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Black Star Gate, Accra</div>
+              <div class="carousel__caption">
+                The Black Star was raised as a beacon. It does not
+                discover the returnee; it confirms what she already
+                knew about where she belongs.
+              </div>
+            </div>
           </div>
-          <p class="glimpse__caption">
-            The Black Star was raised as a beacon. It does not discover
-            the returnee; it confirms what she already knew about where
-            she belongs.
-          </p>
+
+          <div class="carousel__slide" data-index="1">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-2.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Aburi Botanical Gardens</div>
+              <div class="carousel__caption">
+                A century of wisdom stands quietly around the visitor
+                at Aburi, each tree a long and patient witness. To
+                walk among them is to be corrected, gently, about how
+                little of the hurry we carry is actually required.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="2">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-3.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">The first bath of return</div>
+              <div class="carousel__caption">
+                Immersion in some of the oldest and most consequential
+                waters of our sacred history. What the ancestors were
+                carried across, the returnee returns to.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="3">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-4.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">After the long day</div>
+              <div class="carousel__caption">
+                Elation at the end of a long day of movement. The
+                work of the table is quieter than the work of the
+                road, and often more clarifying.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="4">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-5.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">The Jollof kitchen</div>
+              <div class="carousel__caption">
+                Jollof rice made by the cohort's own hands under a
+                teacher's watchful correction. The recipe is the
+                country; the country is already in the recipe.
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel__slide" data-index="5">
+            <div class="carousel__image" style="background-image: url('images/portal-gallery-6.jpg');"></div>
+            <div class="carousel__overlay">
+              <div class="carousel__title">Batik and the hand at work</div>
+              <div class="carousel__caption">
+                The Batik studio, where the cohort learned to read
+                wax as a kind of writing. Every pattern is a sentence
+                someone's grandmother knew by heart.
+              </div>
+            </div>
+          </div>
+
+          <button class="carousel__nav carousel__nav--prev" aria-label="Previous image">&#8249;</button>
+          <button class="carousel__nav carousel__nav--next" aria-label="Next image">&#8250;</button>
         </div>
 
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--ii">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-2.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate II · Aburi Botanical Gardens</div>
-          </div>
-          <p class="glimpse__caption">
-            A century of wisdom stands quietly around the visitor at
-            Aburi, each tree a long and patient witness. To walk among
-            them is to be corrected, gently, about how little of the
-            hurry we carry is actually required.
-          </p>
+        <div class="carousel__dots" role="tablist" aria-label="Gallery navigation">
+          <button class="carousel__dot is-active" aria-label="Slide 1"></button>
+          <button class="carousel__dot" aria-label="Slide 2"></button>
+          <button class="carousel__dot" aria-label="Slide 3"></button>
+          <button class="carousel__dot" aria-label="Slide 4"></button>
+          <button class="carousel__dot" aria-label="Slide 5"></button>
+          <button class="carousel__dot" aria-label="Slide 6"></button>
         </div>
-
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--iii">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-3.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate III · The first bath of return</div>
-          </div>
-          <p class="glimpse__caption">
-            Immersion in some of the oldest and most consequential
-            waters of our sacred history. What the ancestors were
-            carried across, the returnee returns to.
-          </p>
-        </div>
-
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--iv">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-4.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate IV · After the long day</div>
-          </div>
-          <p class="glimpse__caption">
-            Elation at the end of a long day of movement. The work of
-            the table is quieter than the work of the road, and often
-            more clarifying.
-          </p>
-        </div>
-
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--v">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-5.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate V · The Jollof kitchen</div>
-          </div>
-          <p class="glimpse__caption">
-            Jollof rice made by the cohort's own hands under a
-            teacher's watchful correction. The recipe is the country;
-            the country is already in the recipe.
-          </p>
-        </div>
-
-        <div class="glimpse__item">
-          <div class="plate plate--wide plate--vi">
-            <div class="plate__fill" style="background-image: url('images/portal-gallery-6.jpg'); background-size: cover; background-position: center;"></div>
-            <div class="plate__label">Plate VI · Batik and the hand at work</div>
-          </div>
-          <p class="glimpse__caption">
-            The Batik studio, where the cohort learned to read wax as
-            a kind of writing. Every pattern is a sentence someone's
-            grandmother knew by heart.
-          </p>
-        </div>
-
       </div>
     </div>
   </section>
@@ -1081,8 +1429,8 @@
         </p>
       </div>
       <div class="footer__links">
-        <a href="main.html">← Return to the public site</a>
-        <a href="inquire.html">Contact your concierge</a>
+        <span>Email Trip Hosts</span>
+        <a href="mailto:onyxislegh@gmail.com">onyxislegh@gmail.com</a>
       </div>
     </div>
     <div class="footer__meta">
@@ -1094,5 +1442,53 @@
   <div class="corpus-badge">Part of the <a href="../index.html">Corpus</a> ecosystem &middot; &copy; April 2026</div>
 
   <script src="js/main.js"></script>
+  <script>
+    // Glimpse carousel: self-contained, no external dependencies.
+    (function () {
+      var root = document.getElementById('glimpseCarousel');
+      if (!root) return;
+
+      var slides = root.querySelectorAll('.carousel__slide');
+      var dots   = root.querySelectorAll('.carousel__dot');
+      var prev   = root.querySelector('.carousel__nav--prev');
+      var next   = root.querySelector('.carousel__nav--next');
+      var count  = slides.length;
+      var current = 0;
+
+      function goTo(idx) {
+        slides[current].classList.remove('is-active');
+        slides[current].classList.remove('show-caption');
+        dots[current].classList.remove('is-active');
+        current = ((idx % count) + count) % count;
+        slides[current].classList.add('is-active');
+        dots[current].classList.add('is-active');
+      }
+
+      prev.addEventListener('click', function () { goTo(current - 1); });
+      next.addEventListener('click', function () { goTo(current + 1); });
+
+      Array.prototype.forEach.call(dots, function (dot, i) {
+        dot.addEventListener('click', function () { goTo(i); });
+      });
+
+      // Keyboard navigation when the carousel has focus
+      root.setAttribute('tabindex', '0');
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  { goTo(current - 1); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { goTo(current + 1); e.preventDefault(); }
+      });
+
+      // Touch devices: tap the active slide to toggle the caption overlay.
+      var isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+      if (isTouch) {
+        Array.prototype.forEach.call(slides, function (slide) {
+          slide.addEventListener('click', function (ev) {
+            if (ev.target.closest('.carousel__nav')) return;
+            slide.classList.toggle('show-caption');
+          });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
